@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import Product from './Product'; // Correct relative import path
+import Product from './Product';
+import './styles.css'; // Import the CSS file at the top of your components
+
 
 function ProductList() {
   const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState({});
 
   useEffect(() => {
-    // Simulate fetching data from an API or any data source
+    // Simulate fetching data from an API or your data source
     // Replace this with your actual data fetching logic
     const mockData = [
       {
@@ -28,23 +31,31 @@ function ProductList() {
       },
       // Add more products here
     ];
-
+  
     // Simulate an API request delay (remove this in a real application)
     setTimeout(() => {
       setProducts(mockData);
     }, 1000);
   }, []);
+  
+
+  const addToCart = (productId) => {
+    const updatedCart = { ...cart };
+    updatedCart[productId] = (updatedCart[productId] || 0) + 1;
+    setCart(updatedCart);
+  };
 
   return (
     <div className="product-list">
       <h1>Product Listing</h1>
-      <ul>
-        {products.map((product) => (
-          <li key={product.id}>
-            <Product product={product} />
-          </li>
-        ))}
-      </ul>
+      {products.map((product) => (
+        <Product
+          key={product.id}
+          product={product}
+          quantity={cart[product.id] || 0}
+          addToCart={() => addToCart(product.id)}
+        />
+      ))}
     </div>
   );
 }
