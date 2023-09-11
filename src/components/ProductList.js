@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Product from './Product';
-import './styles.css'; // Import the CSS file at the top of your components
-
+import './styles.css';
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState({});
+  const [showCart, setShowCart] = useState(false);
 
   useEffect(() => {
     // Simulate fetching data from an API or your data source
@@ -31,13 +31,12 @@ function ProductList() {
       },
       // Add more products here
     ];
-  
+
     // Simulate an API request delay (remove this in a real application)
     setTimeout(() => {
       setProducts(mockData);
     }, 1000);
   }, []);
-  
 
   const addToCart = (productId) => {
     const updatedCart = { ...cart };
@@ -45,17 +44,47 @@ function ProductList() {
     setCart(updatedCart);
   };
 
+  const removeFromCart = (productId) => {
+    const updatedCart = { ...cart };
+    if (updatedCart[productId] > 1) {
+      updatedCart[productId]--;
+    } else {
+      delete updatedCart[productId];
+    }
+    setCart(updatedCart);
+  };
+
+  const toggleCart = () => {
+    setShowCart(!showCart);
+  };
+
   return (
     <div className="product-list">
       <h1>Product Listing</h1>
+      <button onClick={toggleCart}>
+        {showCart ? 'Hide Cart' : 'Show Cart'}
+      </button>
       {products.map((product) => (
         <Product
           key={product.id}
           product={product}
           quantity={cart[product.id] || 0}
           addToCart={() => addToCart(product.id)}
+          removeFromCart={() => removeFromCart(product.id)}
         />
       ))}
+      {showCart && (
+        <div className="cart">
+          <h2>Shopping Cart</h2>
+          {Object.keys(cart).map((productId) => (
+            <div key={productId} className="cart-item">
+              <span>{products.find((p) => p.id === parseInt(productId)).name}</span>
+              <span>Quantity: {cart[productId]}</span>
+              <button onClick={() => removeFromCart(productId)}>Remove</button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Product({ product, quantity, addToCart }) {
+function Product({ product, quantity, addToCart, removeFromCart }) {
   return (
     <div className="product">
       <h2>{product.name}</h2>
@@ -8,6 +8,9 @@ function Product({ product, quantity, addToCart }) {
       <p>Price: ${product.price}</p>
       <p>Quantity: {quantity}</p>
       <button onClick={addToCart}>Add to Cart</button>
+      {quantity > 0 && (
+        <button onClick={removeFromCart}>Remove from Cart</button>
+      )}
     </div>
   );
 }
